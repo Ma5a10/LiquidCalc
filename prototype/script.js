@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to update the display
     const updateDisplay = () => {
-        currentOperandTextElement.innerText = currentOperand;
+        currentOperandTextElement.innerText = currentOperand || previousOperand || '0';
         if (operation != null) {
             previousOperandTextElement.innerText = `${previousOperand} ${operation}`;
         } else {
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentOperand === '0' && number !== '.') {
             currentOperand = number;
         } else if (resetDisplay) {
-            currentOperand = number;
+            currentOperand = (number === '.') ? '0.' : number;
             resetDisplay = false;
         } else {
             currentOperand += number;
@@ -33,7 +33,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to choose an operation
     const chooseOperation = (op) => {
-        if (currentOperand === '') return;
+        if (currentOperand === '') {
+            if (previousOperand !== '') {
+                operation = op;
+            }
+            return;
+        }
         if (previousOperand !== '') {
             compute();
         }
@@ -73,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Round the result to avoid floating-point precision issues
-        currentOperand = Math.round(computation * 1e10) / 1e10;
+        currentOperand = (Math.round(computation * 1e10) / 1e10).toString();
         operation = undefined;
         previousOperand = '';
         resetDisplay = true;
@@ -89,14 +94,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to change the sign of the current operand
     const changeSign = () => {
-        if (currentOperand === '0') return;
+        if (currentOperand === '' || currentOperand === '0') return;
         currentOperand = (parseFloat(currentOperand) * -1).toString();
+        resetDisplay = false;
     }
 
     // function to calculate the percentage of the current operand
     const percentage = () => {
-        if (currentOperand === '0') return;
+        if (currentOperand === '' || currentOperand === '0') return;
         currentOperand = (parseFloat(currentOperand) / 100).toString();
+        resetDisplay = false;
     }
 
     // Animation effect to buttons when keyboard keys are pressed
