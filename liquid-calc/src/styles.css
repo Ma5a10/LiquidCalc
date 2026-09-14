@@ -5,14 +5,20 @@
   font-family: 'Segoe UI', 'Noto Sans JP', sans-serif;
 }
 
+html,
+body {
+  background: transparent !important;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
 body {
   min-height: 100vh;
   height: 475px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: transparent;
-  overflow: hidden;
   position: relative;
 }
 
