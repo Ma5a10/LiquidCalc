@@ -23,7 +23,12 @@ fn drag_window(window: tauri::Window) {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, close_window, minimize_window, drag_window])
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            close_window,
+            minimize_window,
+            drag_window
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
