@@ -1,0 +1,47 @@
+name: Release App
+
+on:
+    push:
+        tags:
+            - 'v*'
+
+jobs:
+    release:
+        permissions:
+            contents: write
+        strategy:
+            fail-fast: false
+            matrix:
+                platform: [windows-latest]
+
+        runs-on: ${{ matrix.platform }}
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                node-version: lts/*
+
+            - name: Setup Rust
+              uses: dtolnay/rust-toolchain@stable
+
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v2
+
+            - name: Install dependencies
+              working-directory: ./liquid-calc
+              run: bun install
+
+            - name: Build Tauri App and Create Release
+              uses: tauri-apps/tauri-action@v0
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                projectPath: "./liquid-calc"
+                tagName: ${{ github.ref_name }}
+                releaseName: "LiquidCalc ${{ github.ref_name }}"
+                releaseBody: "LiquidCalc latest release"
+                releaseDraft: false
+                prerelease: false
